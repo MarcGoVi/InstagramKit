@@ -135,7 +135,7 @@
     }
     
     BOOL success = YES;
-    NSString *token = [self queryStringParametersFromString:url.fragment][@"access_token"];
+    NSString *token = [self queryStringParametersFromString:url.fragment][kKeyAccessToken];
     if (token)
     {
         self.accessToken = token;
@@ -239,6 +239,27 @@
 }
 
 
+/**
+ First approximation to parse the error response received.
+ One of the utilities: detect when a user's access token is no longer valid 
+ (permission revoke, password changed, etc.), an log the user out automatically.
+ @discussion We could also create a new NSError and throw this new error with more accurate info.
+ We have more information in '[dataErrorDict objectForKey:kErrorResponseErrorMessage]'.
+ */
+- (void)parseErrorResponse:(NSError *)error
+{
+    if (!error) return;
+    
+    NSDictionary *dataErrorDict = [[NSJSONSerialization JSONObjectWithData:error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] options:0 error:&error] objectForKey:kErrorResponseMeta];
+    
+    NSString *errorType = [dataErrorDict objectForKey:kErrorResponseErrorType];
+    
+    if ([errorType isEqualToString:kErrorResponseOAuthAccessTokenException]) {
+        [self logout];
+    }
+}
+
+
 #pragma mark - Base Calls -
 
 
@@ -261,6 +282,7 @@
                       success(modelObject);
                   }
                   failure:^(NSURLSessionDataTask *task, NSError *error) {
+                      [self parseErrorResponse:error];
                       (failure)? failure(error, ((NSHTTPURLResponse *)[task response]).statusCode) : 0;
                   }];
 }
@@ -297,6 +319,7 @@
                       });
                   }
                   failure:^(NSURLSessionDataTask *task, NSError *error) {
+                      [self parseErrorResponse:error];
                       (failure)? failure(error, ((NSHTTPURLResponse *)[task response]).statusCode) : 0;
                   }];
 }
@@ -315,6 +338,7 @@
                        (success)? success((NSDictionary *)responseObject) : 0;
                    }
                    failure:^(NSURLSessionDataTask *task, NSError *error) {
+                       [self parseErrorResponse:error];
                        (failure) ? failure(error,((NSHTTPURLResponse*)[task response]).statusCode) : 0;
                    }];
 }
@@ -332,6 +356,7 @@
                          (success)? success((NSDictionary *)responseObject) : 0;
                      }
                      failure:^(NSURLSessionDataTask *task, NSError *error) {
+                         [self parseErrorResponse:error];
                          (failure) ? failure(error,((NSHTTPURLResponse*)[task response]).statusCode) : 0;
                      }];
 }

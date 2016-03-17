@@ -269,6 +269,11 @@ INSTAGRAMKIT_EXTERN NSString *const kRelationshipActionUnblock;
 INSTAGRAMKIT_EXTERN NSString *const kRelationshipActionApprove;
 INSTAGRAMKIT_EXTERN NSString *const kRelationshipActionIgnore;
 
+INSTAGRAMKIT_EXTERN NSString *const kErrorResponseMeta;
+INSTAGRAMKIT_EXTERN NSString *const kErrorResponseErrorMessage;
+INSTAGRAMKIT_EXTERN NSString *const kErrorResponseErrorType;
+INSTAGRAMKIT_EXTERN NSString *const kErrorResponseOAuthAccessTokenException;
+
 #define IKNotNull(obj) (obj && (![obj isEqual:[NSNull null]]) && (![obj isEqual:@"<null>"]) )
 #define IKValidDictionary(dict) (IKNotNull(dict) && [dict isKindOfClass:[NSDictionary class]])
 #define IKValidArray(array) (IKNotNull(array) && [array isKindOfClass:[NSArray class]])

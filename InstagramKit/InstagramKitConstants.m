@@ -49,3 +49,8 @@ NSString *const kRelationshipActionBlock = @"block";
 NSString *const kRelationshipActionUnblock = @"unblock";
 NSString *const kRelationshipActionApprove = @"approve";
 NSString *const kRelationshipActionIgnore = @"ignore";
+
+NSString *const kErrorResponseMeta = @"meta";
+NSString *const kErrorResponseErrorMessage = @"error_message";
+NSString *const kErrorResponseErrorType = @"error_type";
+NSString *const kErrorResponseOAuthAccessTokenException = @"OAuthAccessTokenException";
